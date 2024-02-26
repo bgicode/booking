@@ -1,3 +1,8 @@
+<?php
+include_once('readWriteCSV.php');
+include_once('sources.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,17 +18,16 @@
             <a href="/index.php" class="button beer-button-blue">бронировать ещё</a>
         </button>
         <?php
-        if (($file = fopen('date.csv', 'r')) !== false) {
+        if ($data = Read($dataPath)) {
             echo '<table>';
-            while (($data = fgetcsv($file, 1000, ';')) !== false) {
+            foreach ($data as $line) {
                 echo '<tr>';
-                foreach ($data as $cel) {
+                foreach ($line as $cel) {
                     echo '<td>' . $cel . '</td>'; 
                 }
                 echo '</tr>'; 
             }
             echo '</table>';
-            fclose($file);
         }
         ?>
     </div>

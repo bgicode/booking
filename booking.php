@@ -1,101 +1,94 @@
 <?php
-$flagMassage = false;
-$firstDate; // дата бронирования от
-$secondDate; // дата бронирования до
-$massage; // сообщение об ошибке
-$bookingDate; //новая дата или период бронирования в формате дд.мм.ггг-дд.мм.ггг
-$arBookedPeriods = []; // все забронированные даты и промежутки
-$arBookedDates = []; // все забронированные даты
-$arNewEntry = []; //новая запись
+declare(strict_types = 1);
+
+include_once('readWriteCSV.php');
+include_once('sources.php');
+include_once('helpers.php');
+
+/**
+ * @param string $firstDate дата бронирования от
+ * @param string $secondDate дата бронирования до
+ * @param string $massage сообщение об ошибке
+ * @param array $arBookingDate новая дата или период бронирования в формате дд.мм.ггг-дд.мм.ггг
+ * @param array $arBookedPeriods все забронированные даты и промежутки
+ * @param array $arBookedDates все забронированные даты
+ * @param array $arNewEntry новая запись
+ */ 
+
+$error = false;
 
 if ($_POST['booking']) {
 
     // ___________получение новой даты в нужном формате_____________
-    $firstDate = explode('-', $_POST['firstDate']);
-    $firstDate = array_reverse($firstDate);
-    $firstDate = implode('.', $firstDate); // цепочка пребразование полученной даты из амер-го формата в европейский
     
-    if ($_POST['secondDate']) {
-
-        $secondDate = explode('-', $_POST['secondDate']);
-        $secondDate = array_reverse($secondDate);
-        $secondDate = implode('.', $secondDate);
+    $firstDate = DateConverter($_POST['firstDate']); // пребразование полученной даты из амер-го формата в европейский    
+    if ($_POST['secondDate']
+        and $_POST['secondDate'] != $_POST['firstDate']
+    ) {
+        $secondDate = DateConverter($_POST['secondDate']);
 
         if (strtotime($firstDate) > strtotime($secondDate)) { //проверка корректности ввода периода
-            $flagMassage = true;
+            $error = true;
             $massage = "вторая дата должна быть позже первой";
         } elseif (isset($secondDate)) {
-            $bookingDate = $firstDate . '-' . $secondDate; //формироания периода в заданном формате
+            $arBookingDate[] = $firstDate;
+            $arBookingDate[] = $secondDate; 
         }
     } elseif (isset($firstDate)) {
-        $bookingDate = $firstDate;
+        $arBookingDate[] = $firstDate;
     }
+
     // ___________конец получение новой даты в нужном формате_____________
 
     // ___________получение списка заббронированных дат из базы__________
-    if (($file = fopen('date.csv', 'r')) !== false
-        and $flagMassage == false
-    ) {
-        while (($data = fgetcsv($file, 1000, ';')) !== false) {
-            $arBookedPeriods[] = $data[1]; // чтение и запись забронированных дат в служебный массив
-        }
 
-        foreach ($arBookedPeriods as $dates) { // создание списка всех уже забронированых дат
-            if (strpos($dates, '-')) { // если период то получаем все даты из этого периода
-                $arOnePeriod = explode('-', $dates);
-                $start = strtotime($arOnePeriod[0]);
-                $end = strtotime($arOnePeriod[1]);
-                $arPeriodDetail = array();
-                while ($start <= $end) {
-                    $arPeriodDetail[] = date('d.m.Y', $start);
-                    $start = strtotime('+1 day', $start);
-                }
-                foreach ($arPeriodDetail as $periodDate) {
-                    $arBookedDates[] = $periodDate;
-                }
-            } else {
-                $arBookedDates[] = $dates;
-            }
-        }
+    if ($error == false) {
+        $arBookedPeriods = Read($dataPath);        
+        $arBookedDates = SmoothArr($arBookedPeriods, 'DateSpliter');
     }
-    fclose($file);
+
     // ___________конец получение списка забронированных дат из базы__________
 
     //_____________запись новых дат в базу__________________
-    if (isset($bookingDate)) {
-        if (strpos($bookingDate, '-')) { //полученте всех дат введённого нового периода
 
-            $arNewBookingPeriod = explode('-', $bookingDate);
-            $newStart = strtotime($arNewBookingPeriod[0]);
-            $newEnd = strtotime($arNewBookingPeriod[1]);
-            $arNewPeriodDetail = array();
-    
-            while ($newStart <= $newEnd) {
-                $arNewPeriodDetail[] = date('d.m.Y', $newStart);
-                $newStart = strtotime('+1 day', $newStart);
-            }
+    if (isset($arBookingDate)
+        and !$error
+    ) {
+        if (count($arBookingDate) == 2) { //полученте всех дат введённого нового периода
+            $arNewPeriodDetail = DateSpliter($arBookingDate);
+
             foreach ($arNewPeriodDetail as $periodDate) {
                 $arBookingPeriod[] = $periodDate;
             }
         } else {
-            $arBookingPeriod[] = $bookingDate;
+            $arBookingPeriod[] = $arBookingDate[0];
         }
+
         if (empty(array_intersect($arBookedDates, $arBookingPeriod))) { //надождение пересечений новых дат со старыми
-            $arNewEntry[] = $_POST['name']; //бронирующий
-            $arNewEntry[] = $bookingDate; //новая строка в файл
+            $arNewEntry[] = $_POST['name']; //бронирующий 
+            $arNewEntry[] = $arBookingDate[0]; //новая строка в файл
+
+            if ($arBookingDate[1]) {
+                $arNewEntry[] = $arBookingDate[1]; //новая строка в файл, если это период
+            }
+
             if (!empty( $arNewEntry)) {
-                $file = fopen('date.csv', 'a');
-                fputcsv($file, $arNewEntry, ';');
-                fclose($file);
+                
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+                    Write($dataPath, $arNewEntry);
+
                     header('Location: result.php');
+
                     exit;
                 }
             }
         } else {
-            $flagMassage = true;
+            $error = true;
             $massage = "дата или период заняты";
         }
     }
+    
     //_____________конец записи новых дат в базу__________________
+
 }

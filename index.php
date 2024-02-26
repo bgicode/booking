@@ -28,7 +28,7 @@ require_once('booking.php');
             </div>
             <input class="input" type="submit" name="booking" value="Забронировать">
             <?php
-            if ($flagMassage) {
+            if ($error) {
                 echo '<p class="massage">' . $massage . '</p>';
             }
             ?>
@@ -36,17 +36,16 @@ require_once('booking.php');
         <div>
             <div class="listTitle">Список бронирования</div>
             <?php
-            if (($file = fopen('date.csv', 'r')) !== false) {
+            if ($data = Read($dataPath)) {
                 echo '<table>';
-                while (($data = fgetcsv($file, 1000, ';')) !== false) {
+                foreach ($data as $line) {
                     echo '<tr>';
-                    foreach ($data as $cel) {
+                    foreach ($line as $cel) {
                         echo '<td>' . $cel . '</td>'; 
                     }
                     echo '</tr>'; 
                 }
                 echo '</table>';
-                fclose($file);
             }
             ?>
         </div>
