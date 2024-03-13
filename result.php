@@ -23,9 +23,9 @@ include_once('sources.php');
             foreach ($data as $line) {
                 echo '<tr>';
                 foreach ($line as $cel) {
-                    echo '<td>' . $cel . '</td>'; 
+                    echo '<td>' . $cel . '</td>';
                 }
-                echo '</tr>'; 
+                echo '</tr>';
             }
             echo '</table>';
         }

@@ -20,19 +20,21 @@ $error = false;
 if ($_POST['booking']) {
 
     // ___________получение новой даты в нужном формате_____________
-    
-    $firstDate = DateConverter($_POST['firstDate']); // пребразование полученной даты из амер-го формата в европейский    
+
+    // пребразование полученной даты из амер-го формата в европейский
+    $firstDate = DateConverter($_POST['firstDate']);
     if ($_POST['secondDate']
         and $_POST['secondDate'] != $_POST['firstDate']
     ) {
         $secondDate = DateConverter($_POST['secondDate']);
 
-        if (strtotime($firstDate) > strtotime($secondDate)) { //проверка корректности ввода периода
+        // проверка корректности ввода периода
+        if (strtotime($firstDate) > strtotime($secondDate)) {
             $error = true;
             $massage = "вторая дата должна быть позже первой";
         } elseif (isset($secondDate)) {
             $arBookingDate[] = $firstDate;
-            $arBookingDate[] = $secondDate; 
+            $arBookingDate[] = $secondDate;
         }
     } elseif (isset($firstDate)) {
         $arBookingDate[] = $firstDate;
@@ -43,7 +45,7 @@ if ($_POST['booking']) {
     // ___________получение списка заббронированных дат из базы__________
 
     if ($error == false) {
-        $arBookedPeriods = Read($dataPath);        
+        $arBookedPeriods = Read($dataPath);
         $arBookedDates = SmoothArr($arBookedPeriods, 'DateSpliter');
     }
 
@@ -54,7 +56,8 @@ if ($_POST['booking']) {
     if (isset($arBookingDate)
         and !$error
     ) {
-        if (count($arBookingDate) == 2) { //полученте всех дат введённого нового периода
+        // полученте всех дат введённого нового периода
+        if (count($arBookingDate) == 2) {
             $arNewPeriodDetail = DateSpliter($arBookingDate);
 
             foreach ($arNewPeriodDetail as $periodDate) {
@@ -64,12 +67,16 @@ if ($_POST['booking']) {
             $arBookingPeriod[] = $arBookingDate[0];
         }
 
-        if (empty(array_intersect($arBookedDates, $arBookingPeriod))) { //надождение пересечений новых дат со старыми
-            $arNewEntry[] = $_POST['name']; //бронирующий 
-            $arNewEntry[] = $arBookingDate[0]; //новая строка в файл
+         // надождение пересечений новых дат со старыми
+        if (empty(array_intersect($arBookedDates, $arBookingPeriod))) {
+            // бронирующий
+            $arNewEntry[] = $_POST['name'];
+            // новая строка в файл
+            $arNewEntry[] = $arBookingDate[0];
 
             if ($arBookingDate[1]) {
-                $arNewEntry[] = $arBookingDate[1]; //новая строка в файл, если это период
+                // новая строка в файл, если это период
+                $arNewEntry[] = $arBookingDate[1];
             }
 
             if (!empty( $arNewEntry)) {
@@ -88,7 +95,7 @@ if ($_POST['booking']) {
             $massage = "дата или период заняты";
         }
     }
-    
+
     //_____________конец записи новых дат в базу__________________
 
 }
