@@ -15,7 +15,7 @@ include_once('sources.php');
     <div class="resWraper">
         <p class="result">Дата забронирована</p>
         <button class="result resBtn">
-            <a href="/index.php" class="button beer-button-blue">бронировать ещё</a>
+            <a href="index.php" class="button beer-button-blue">бронировать ещё</a>
         </button>
         <?php
         if ($data = Read($dataPath)) {
