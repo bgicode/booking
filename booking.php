@@ -4,6 +4,7 @@ declare(strict_types = 1);
 include_once('readWriteCSV.php');
 include_once('sources.php');
 include_once('helpers.php');
+include_once('sendMail.php');
 
 /**
  * @param string $firstDate дата бронирования от
@@ -84,6 +85,10 @@ if ($_POST['booking']) {
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     Write($dataPath, $arNewEntry);
+
+                    $massage = Massage($arNewEntry);
+
+                    Notification($massage);
 
                     header('Location: result.php');
 

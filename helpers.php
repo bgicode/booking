@@ -36,3 +36,12 @@ function SmoothArr(array $arMulti, callable $calbackFunc): array
 
     return $arAllMono;
 }
+
+function Massage(array $arData): string
+{
+    if (isset($arData[2])) {
+        return $arData[0] . ' забронировал от ' . $arData[1] . ' до ' . $arData[2];
+    } else {
+        return $arData[0] . ' забронировал на ' . $arData[1];
+    }
+}
