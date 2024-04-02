@@ -12,11 +12,21 @@ function Read(string $dataPath): array
     return $arWritingLines;
 }
 
-function Write(string $dataPath, array $line)
+function Write(array $line): bool
 {
-    $file = fopen($dataPath, 'a');
+    $path = 'date.csv';
 
-    fputcsv($file, $line, ';');
+    if (file_exists($path)) {
+        $file = fopen($path, 'a');
 
-    fclose($file);
+        if (fputcsv($file, $line, ';')) {
+            return true;
+        } else {
+            return false;
+        };
+
+        fclose($file);
+    } else {
+        return false;
+    };
 }

@@ -12,7 +12,8 @@ function Notification(string $newData): void
     $mail = new SendMailSmtpClass($username, $password, $host, $smtpFrom, $port);
 
     $mailTo = 'desimo123@yandex.ru';
-    $subject = 'бронирование';
+    $subject = 'бронирование на ';
+    $subject .= $_SERVER['HTTP_HOST'];
     $headers = "From: desimo123@mail.ru \r\n";
     $headers .= "Content-type: text/plain; charset=utf-8\r\n";
 

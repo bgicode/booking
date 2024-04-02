@@ -37,11 +37,11 @@ function SmoothArr(array $arMulti, callable $calbackFunc): array
     return $arAllMono;
 }
 
-function Massage(array $arData): string
+function Message(array $arData): string
 {
     if (isset($arData[2])) {
-        return $arData[0] . ' забронировал от ' . $arData[1] . ' до ' . $arData[2];
+        return "Новое бронирование на сайте: ". $_SERVER['HTTP_HOST'] . "\r\n\r\n" . $arData[0] . "\r\nзабронировал от\r\n" . $arData[1] . ' до ' . $arData[2];
     } else {
-        return $arData[0] . ' забронировал на ' . $arData[1];
+        return "Новое бронирование на сайте: ". $_SERVER['HTTP_HOST'] . "\r\n\r\n" . $arData[0] . "\r\nзабронировал на " . $arData[1];
     }
 }

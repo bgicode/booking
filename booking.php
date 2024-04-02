@@ -48,6 +48,7 @@ if ($_POST['booking']) {
     if ($error == false) {
         $arBookedPeriods = Read($dataPath);
         $arBookedDates = SmoothArr($arBookedPeriods, 'DateSpliter');
+
     }
 
     // ___________конец получение списка забронированных дат из базы__________
@@ -84,15 +85,23 @@ if ($_POST['booking']) {
                 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-                    Write($dataPath, $arNewEntry);
-
-                    $massage = Massage($arNewEntry);
-
-                    Notification($massage);
-
-                    header('Location: result.php');
-
-                    exit;
+                    try {
+                        if (Write($arNewEntry)) {
+                            $message = Message($arNewEntry);
+    
+                            Notification($message);
+    
+                            header('Location: result.php');
+    
+                            exit;
+                        } else {
+                            $error = true;
+                            $massage = "Извините запись не произошла, попробуйте позже";
+                        }
+                    } catch (Throwable $e){
+                        $error = true;
+                        $massage = "Извините запись не произошла, попробуйте позже";
+                    }
                 }
             }
         } else {
