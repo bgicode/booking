@@ -9,7 +9,7 @@ include_once('sendMail.php');
 /**
  * @param string $firstDate дата бронирования от
  * @param string $secondDate дата бронирования до
- * @param string $massage сообщение об ошибке
+ * @param string $message сообщение об ошибке
  * @param array $arBookingDate новая дата или период бронирования в формате дд.мм.ггг-дд.мм.ггг
  * @param array $arBookedPeriods все забронированные даты и промежутки
  * @param array $arBookedDates все забронированные даты
@@ -32,7 +32,7 @@ if ($_POST['booking']) {
         // проверка корректности ввода периода
         if (strtotime($firstDate) > strtotime($secondDate)) {
             $error = true;
-            $massage = "вторая дата должна быть позже первой";
+            $message = "вторая дата должна быть позже первой";
         } elseif (isset($secondDate)) {
             $arBookingDate[] = $firstDate;
             $arBookingDate[] = $secondDate;
@@ -96,17 +96,17 @@ if ($_POST['booking']) {
                             exit;
                         } else {
                             $error = true;
-                            $massage = "Извините запись не произошла, попробуйте позже";
+                            $message = "Извините запись не произошла, попробуйте позже";
                         }
                     } catch (Throwable $e){
                         $error = true;
-                        $massage = "Извините запись не произошла, попробуйте позже";
+                        $message = "Извините запись не произошла, попробуйте позже";
                     }
                 }
             }
         } else {
             $error = true;
-            $massage = "дата или период заняты";
+            $message = "дата или период заняты";
         }
     }
 

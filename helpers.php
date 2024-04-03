@@ -40,8 +40,8 @@ function SmoothArr(array $arMulti, callable $calbackFunc): array
 function Message(array $arData): string
 {
     if (isset($arData[2])) {
-        return "Новое бронирование на сайте: ". $_SERVER['HTTP_HOST'] . "\r\n\r\n" . $arData[0] . "\r\nзабронировал от\r\n" . $arData[1] . ' до ' . $arData[2];
+        return "<strong>Новое бронирование на сайте: " . $_SERVER['HTTP_HOST'] . "</strong><br><br>" . $arData[0] . "<br>забронировал от " . $arData[1] . ' до ' . $arData[2];
     } else {
-        return "Новое бронирование на сайте: ". $_SERVER['HTTP_HOST'] . "\r\n\r\n" . $arData[0] . "\r\nзабронировал на " . $arData[1];
+        return "<strong>Новое бронирование на сайте: " . $_SERVER['HTTP_HOST'] . "</strong><br><br>" . $arData[0] . "<br>забронировал на " . $arData[1];
     }
 }

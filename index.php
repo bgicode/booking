@@ -29,7 +29,7 @@ require_once('booking.php');
             <input class="input" type="submit" name="booking" value="Забронировать">
             <?php
             if ($error) {
-                echo '<p class="massage">' . $massage . '</p>';
+                echo '<p class="message">' . $message . '</p>';
             }
             ?>
         </form>
