@@ -11,9 +11,8 @@ function Notification(string $newData): void
 
     $mail = new SendMailSmtpClass($username, $password, $host, $smtpFrom, $port);
 
-    $uri = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
-    $uri = explode('?', $uri);
-    $url = $_SERVER['HTTP_HOST'] . $uri[0];
+    $uri = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']);   
+    $url = $_SERVER['HTTP_HOST'] . $uri;
 
     $mailTo = 'desimo123@yandex.ru';
     $subject = 'бронирование на ';
