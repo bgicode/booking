@@ -13,7 +13,7 @@ function Notification(string $newData): void
 
     $mailTo = 'desimo123@yandex.ru';
     $subject = 'бронирование на ';
-    $subject .= $_SERVER['HTTP_HOST'];
+    $subject .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $headers = "From: desimo123@mail.ru\r\n";
     $headers .= "Content-type: text/html; charset=utf-8\r\n";
 
