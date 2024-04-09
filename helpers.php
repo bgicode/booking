@@ -43,8 +43,8 @@ function Message(array $arData): string
     $url = $_SERVER['HTTP_HOST'];
 
     if (isset($arData[2])) {
-        return "<strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData[0] . "<br>забронировал от " . $arData[1] . ' до ' . $arData[2];
+        return "<strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData[0] . "<br>забронировал<br>от " . $arData[1] . ' до ' . $arData[2];
     } else {
-        return "<strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData[0] . "<br>забронировал на " . $arData[1];
+        return "<strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData[0] . "<br>забронировал<br>на " . $arData[1];
     }
 }
