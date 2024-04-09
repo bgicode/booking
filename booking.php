@@ -4,7 +4,7 @@ declare(strict_types = 1);
 include_once('readWriteCSV.php');
 include_once('sources.php');
 include_once('helpers.php');
-include_once('sendMail.php');
+include_once('sendMailStandart.php');
 
 /**
  * @param string $firstDate дата бронирования от
@@ -89,11 +89,11 @@ if ($_POST['booking']) {
                         if (Write($arNewEntry)) {
                             $message = Message($arNewEntry);
     
-                            Notification($message);
-    
-                            header('Location: result.php');
-    
-                            exit;
+                            if (Notification($message)) {
+                                header('Location: result.php');
+                                exit;
+                            };
+
                         } else {
                             $error = true;
                             $message = "Извините запись не произошла, попробуйте позже";

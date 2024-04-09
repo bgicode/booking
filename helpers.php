@@ -39,8 +39,8 @@ function SmoothArr(array $arMulti, callable $calbackFunc): array
 
 function Message(array $arData): string
 {
-    $uri = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']);
-    $url = $_SERVER['HTTP_HOST'] . $uri;
+    // $uri = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']);
+    $url = $_SERVER['HTTP_HOST'];
 
     if (isset($arData[2])) {
         return "<strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData[0] . "<br>забронировал от " . $arData[1] . ' до ' . $arData[2];
