@@ -1,6 +1,8 @@
 <?php
+session_start();
 include_once('readWriteCSV.php');
 include_once('sources.php');
+include_once('helpers.php');
 ?>
 
 <!DOCTYPE html>
@@ -13,23 +15,32 @@ include_once('sources.php');
 </head>
 <body>
     <div class="resWraper">
-        <p class="result">Дата забронирована</p>
-        <button class="result resBtn">
-            <a href="index.php" class="button beer-button-blue">бронировать ещё</a>
-        </button>
-        <?php
-        if ($data = Read($dataPath)) {
-            echo '<table>';
-            foreach ($data as $line) {
-                echo '<tr>';
-                foreach ($line as $cel) {
-                    echo '<td>' . $cel . '</td>';
-                }
-                echo '</tr>';
+        <p class="result">
+            <?php
+            if ($_SESSION['result'] == 'booking') {
+                echo 'Дата забронирована';
+            } elseif ($_SESSION['result'] == 'change') {
+                echo 'Имя измененно';
             }
-            echo '</table>';
-        }
-        ?>
+            ?>
+        </p>
+        <button class="result resBtn">
+            <a href="index.php" class="button beer-button-blue">НАЗАД</a>
+        </button>
+        <table>
+            <tr>
+                <td><strong>Имя</strong></td>
+                <td><strong>Дата заселения</strong></td>
+                <td><strong>Дата выезда</strong></td>
+            </tr>
+            <?php
+            if (($arData = Read($dataPath))
+                && ($arDataCust = Read($dataPathCustomers))
+            ) {
+                joinTable($arData, $arDataCust);
+            }
+            ?>
+        </table>
     </div>
 </body>
 </html>
