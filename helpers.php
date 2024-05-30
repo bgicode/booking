@@ -1,4 +1,12 @@
 <?php
+function redirect(string $extra): void
+{
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    
+    header("Location: http://$host$uri/$extra");
+}
+
 function DateConverter(string $date): string
 {
     return implode('.', array_reverse(explode('-', $date)));

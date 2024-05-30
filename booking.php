@@ -130,16 +130,16 @@ if ($_POST['booking']) {
                             $_SESSION['result'] = 'booking';
 
                             Notification($message);
-                            header('Location: result.php');
+                            redirect('result.php');
                             exit;
 
                         } else {
                             $error = true;
-                            $message = "Извините запись не произошла, попробуйте позже 2";
+                            $message = "Извините запись не произошла, попробуйте позже";
                         }
                     } catch (Throwable $e){
                         $error = true;
-                        $message = $writeBooking . "Извините запись не произошла, попробуйте позже 3" . $writeCust;
+                        $message = $writeBooking . "Извините запись не произошла, попробуйте позже" . $writeCust;
                     }
                 }
             }
@@ -164,6 +164,7 @@ if ($_POST['changeName']) {
         if ($arCustomers = Read($dataPathCustomers)) {
             foreach ($arCustomers as $key => $arCust) {
                 if ($arCust[0] == $oldNameId) {
+                    $oldName = $arCust[1];
                     $arCustomers[$key][1] = $newName;
                     break;
                 }
@@ -175,7 +176,11 @@ if ($_POST['changeName']) {
                     try {
                         if (reWrite($arCustomers, $dataPathCustomers)) {
                             $_SESSION['result'] = 'change';
-                            header('Location: result.php');
+
+                            $message = "<html><body><strong>Изменение имени на сайте: " . $_SERVER['HTTP_HOST'] . "</strong><br><br>" . $oldName . " изменил имя на " . $newName . "</body></html>";
+
+                            Notification($message);
+                            redirect('result.php');
                             exit;
                         } else {
                             $error = true;

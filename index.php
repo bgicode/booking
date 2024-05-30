@@ -60,7 +60,7 @@ require_once('booking.php');
                 <input id="checkbox" type="checkbox" name="checkbox" />
             </div>
             <input class="input booking" type="submit" name="booking" value="Забронировать">
-            <input class="input changeName" type="submit" name="changeName" value="Изменииь имя">
+            <input class="input changeName" type="submit" name="changeName" value="Изменить имя">
             <?php
             if ($error) {
                 echo '<p class="message">' . $message . '</p>';
