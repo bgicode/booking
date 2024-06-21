@@ -1,5 +1,6 @@
 <?php
 require_once('booking.php');
+// include_once('readWriteSQL.php');
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +10,7 @@ require_once('booking.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="./script.js" type="text/javascript"></script>
+    <script src="script.js" type="text/javascript"></script>
 </head>
 <body>
     <div class="wraper">
@@ -33,7 +34,7 @@ require_once('booking.php');
                 <label>Какое имя изменить</label>
                 <select name="oldName">
                     <?php
-                    if ($arDataCust = Read($dataPathCustomers)) {
+                    if ($arDataCust = Read('guests', $pdo)) {
                         foreach ($arDataCust as $arCustomers) {
                             echo '<option value="' . $arCustomers[0] . '">' . $arCustomers[1] . '</option>';
                         }
@@ -76,11 +77,20 @@ require_once('booking.php');
                     <td><strong>Дата выезда</strong></td>
                 </tr>
                 <?php
-                if (($arData = Read($dataPath))
-                    && ($arDataCust = Read($dataPathCustomers))
-                ) {
-                    joinTable($arData, $arDataCust);
+                $query = "SELECT name, date_entry, date_exit
+                FROM guests JOIN booking_list
+                ON guests.id = booking_list.name_id;";
+        // $arNameDate = Read('guests', $pdo, $query);
+                if (!empty($arNameDate = Read('guests', $pdo, $query))) {
+                    getTable($arNameDate);
                 }
+
+
+                // if (($arData = Read('booking_list', $pdo))
+                //     && ($arDataCust = Read('guests', $pdo))
+                // ) {
+                //     joinTable($arData, $arDataCust);
+                // }
                 ?>
             </table>
         </div>

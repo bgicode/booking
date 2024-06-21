@@ -44,33 +44,24 @@ function SmoothArr(mixed $arMulti, callable $calbackFunc): mixed
     return $arAllMono;
 }
 
-function Message(array $arData, $arData2): string
+function Message(array $arData, $customer): string
 {
     // $uri = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']);
     $url = $_SERVER['HTTP_HOST'];
 
-    if (isset($arData[3])) {
-        return "<html><body><strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData2[1] . "<br>забронировал<br> от " . $arData[2] . ' до ' . $arData[3] . "</body></html>";
+    if (isset($arData[1])) {
+        return "<html><body><strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $customer . "<br>забронировал<br> от " . $arData[0] . ' до ' . $arData[1] . "</body></html>";
     } else {
-        return "<html><body><strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" . $arData2[1] . "<br>забронировал<br>на " . $arData[2] . "</body></html>";
+        return "<html><body><strong>Новое бронирование на сайте: " . $url . "</strong><br><br>" .$customer . "<br>забронировал<br>на " . $arData[0] . "</body></html>";
     }
 }
 
-function joinTable(array $arTable1,array $arTable2): void
-{
-    $joinCell = function ($arTable2, $arOutput)
-    {
-        foreach ($arTable2 as $arEntry) {
-            if ($arEntry[0] == $arOutput[1]){
-                return $arEntry[1];
-            }
-        }
-    };
-    foreach ($arTable1 as $line) {
+function getTable($arTable) {
+    foreach ($arTable as $line) {
         echo '<tr>';
-            echo '<td>' . $joinCell($arTable2, $line) . '</td>';
+            echo '<td>' . $line[0] . '</td>';
+            echo '<td>' . $line[1] . '</td>';
             echo '<td>' . $line[2] . '</td>';
-            echo '<td>' . $line[3] . '</td>';
         echo '</tr>';
-    } 
+    }
 }

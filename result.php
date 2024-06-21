@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('readWriteCSV.php');
+include_once('readWriteSQL.php');
 include_once('sources.php');
 include_once('helpers.php');
 ?>
@@ -19,8 +19,11 @@ include_once('helpers.php');
             <?php
             if ($_SESSION['result'] == 'booking') {
                 echo 'Дата забронирована';
+                // echo '<pre>';
+                // print_r($_SESSION['ult']);
+                // echo '</pre>';
             } elseif ($_SESSION['result'] == 'change') {
-                echo 'Имя измененно';
+                echo "Имя измененно";
             }
             ?>
         </p>
@@ -34,11 +37,18 @@ include_once('helpers.php');
                 <td><strong>Дата выезда</strong></td>
             </tr>
             <?php
-            if (($arData = Read($dataPath))
-                && ($arDataCust = Read($dataPathCustomers))
-            ) {
-                joinTable($arData, $arDataCust);
+            $query = "SELECT name, date_entry, date_exit
+                    FROM guests JOIN booking_list
+                    ON guests.id = booking_list.name_id;";
+            // $arNameDate = Read('guests', $pdo, $query);
+            if (!empty($arNameDate = Read('guests', $pdo, $query))) {
+                getTable($arNameDate);
             }
+            // if (($arData = Read('booking_list', $pdo))
+            //     && ($arDataCust = Read('guests', $pdo))
+            // ) {
+            //     joinTable($arData, $arDataCust);
+            // }
             ?>
         </table>
     </div>
