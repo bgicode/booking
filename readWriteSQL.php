@@ -1,5 +1,4 @@
 <?php
-
 try {
     $pdo = new PDO(
         'mysql:host=localhost;dbname=booking',
@@ -21,7 +20,7 @@ function Read(string $table, $pdo, $query = false): mixed
     } catch (PDOException $e) {
         echo "Ошибка выполнения запроса: " . $e->getMessage();
     }
-    
+
     return $arReadingLines;
 }
 
@@ -32,6 +31,7 @@ function Write(array $arPrepParams, $query, $pdo): mixed
         $write->execute($arPrepParams);
     } catch (PDOException $e) {
         echo "Ошибка выполнения запроса: " . $e->getMessage();
+        return false;
     }
 
     return $write;

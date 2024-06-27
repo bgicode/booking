@@ -32,7 +32,7 @@ function SmoothArr(mixed $arMulti, callable $calbackFunc): mixed
 
     // создание списка всех уже забронированых дат
     foreach ($arMulti as $arMomo) {
-        $arMomo =  array_slice($arMomo, 2);        
+        $arMomo =  array_slice($arMomo, 2);
 
         // если период то получаем все даты из этого периода
         if ($arMomo[1]) {
@@ -56,7 +56,8 @@ function Message(array $arData, $customer): string
     }
 }
 
-function getTable($arTable) {
+function getTable(array $arTable): void
+{
     foreach ($arTable as $line) {
         echo '<tr>';
             echo '<td>' . $line[0] . '</td>';

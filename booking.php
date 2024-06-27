@@ -31,7 +31,6 @@ $smtpFrom = 'elvis@example.com';
 if ($_POST['booking']) {
     $customer = $_POST['name'];
     // ___________получение новой даты в нужном формате_____________
-
     // пребразование полученной даты из амер-го формата в европейский
     $firstDate = DateConverter($_POST['firstDate']);
     if ($_POST['secondDate']
@@ -81,12 +80,7 @@ if ($_POST['booking']) {
 
          // нахождение пересечений новых дат со старыми
         if (empty(array_intersect($arBookedDates, $arBookingPeriod))) {
-            // $bookingId = count((array)$arBookedPeriods) + 1;
-            
-
             // бронирующий
-            // $arOldCustomers = Read('guests', $pdo);
-
             $query = "SELECT id FROM guests WHERE name = '$customer';";
             if (!empty($arOldNameId = Read('guests', $pdo, $query))) {
                 $customerId = $arOldNameId[0][0];
@@ -94,28 +88,6 @@ if ($_POST['booking']) {
             } else {
                 $isCustomerFind = false;
             }
-           
-
-            //_____________поиск клиента в базе______________
-            // foreach ($arOldCustomers as $arOldCust) {
-            //     if ($arOldCust[1] == $_POST['name']) {
-            //         $customerId = $arOldCust[0];
-            //         $isCustomerFind = true;
-            //         break;
-            //     } else {
-            //         $isCustomerFind = false;
-            //     }
-            // }
-
-            // новая строка в файл с записями о клиентах
-            // if (!$isCustomerFind) {
-            //     $arNewEntryCust[] = $customerId;
-            //     $arNewEntryCust[] = $_POST['name'];
-            // }
-
-            // новая строка в файл с записями о бронировании
-            // $arNewEntry[] = $bookingId;
-            // $arNewEntry[] = $customerId;
             $arNewEntry[] = $arBookingDate[0];
 
             if ($arBookingDate[1]) {
@@ -124,7 +96,7 @@ if ($_POST['booking']) {
             }
 
             if (!empty($arNewEntry)) {
-                
+
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if (!$isCustomerFind) {
@@ -138,7 +110,6 @@ if ($_POST['booking']) {
                                     SET @last_guest_id = LAST_INSERT_ID();
                                     INSERT INTO booking_list VALUES (NULL, @last_guest_id, :firstDate, :secondDate);
                                     COMMIT;";
-                            // $writeCust = Write($arPrepParams, $query, $pdo);
                         } else {
                             $arPrepParams = [
                                 ':customerId' => $customerId,
@@ -146,7 +117,6 @@ if ($_POST['booking']) {
                                 ':secondDate' => $secondDate
                             ];
                             $query = "INSERT INTO booking_list VALUES (NULL, :customerId, :firstDate, :secondDate);";
-                            $writeCust = true;
                         }
 
                         if (Write($arPrepParams, $query, $pdo)) {
@@ -158,7 +128,6 @@ if ($_POST['booking']) {
                             Notification($message, $mail);
                             redirect('result.php');
                             exit;
-
                         } else {
                             $error = true;
                             $message = "Извините запись не произошла, попробуйте позже";
@@ -186,45 +155,28 @@ if ($_POST['changeName']) {
         $query = "SELECT name FROM guests WHERE id = $oldNameId;";
         $oldName = Read('guests', $pdo, $query);
 
-
         $query = "UPDATE guests SET name = :newName WHERE id = :oldNameId;";
         $arPrepParams = [
             ':newName' => $newName,
             ':oldNameId' => $oldNameId
         ];
-        // if ($arCustomers = Read($dataPathCustomers)) {
-        //     foreach ($arCustomers as $key => $arCust) {
-        //         if ($arCust[0] == $oldNameId) {
-        //             $oldName = $arCust[1];
-        //             $arCustomers[$key][1] = $newName;
-        //             break;
-        //         }
-        //     }
-        //___________конец созадие массива и замена записи о клиенте в нём__________
 
-   
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    try {
-                        if (Write($arPrepParams, $query, $pdo)) {
-                            $_SESSION['result'] = 'change';
-                            $mail = new SendMailSmtpClass($username, $password, $host, $smtpFrom, $port);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-                            $message = "<html><body><strong>Изменение имени на сайте: " . $_SERVER['HTTP_HOST'] . "</strong><br><br>" . $oldName[0][0] . " изменил имя на " . $newName . "</body></html>";
+            if (Write($arPrepParams, $query, $pdo)) {
+                $_SESSION['result'] = 'change';
+                $mail = new SendMailSmtpClass($username, $password, $host, $smtpFrom, $port);
 
-                            Notification($message, $mail);
-                            redirect('result.php');
-                            exit;
-                        } else {
-                            $error = true;
-                            $message = "Извините имя не изменилось, попробуйте позже";
-                        }
-                    } catch (Throwable $e){
-                        $error = true;
-                        $message = "Извините имя не изменилось, попробуйте позже";
-                    }
-                }
+                $message = "<html><body><strong>Изменение имени на сайте: " . $_SERVER['HTTP_HOST'] . "</strong><br><br>" . $oldName[0][0] . " изменил имя на " . $newName . "</body></html>";
 
+                Notification($message, $mail);
+                redirect('result.php');
+                exit;
+            } else {
+                $error = true;
+                $message = "Извините имя не изменилось, попробуйте позже";
+            }
         }
     }
-
+}
 //______________конец перезаписи имени клиента_________________________

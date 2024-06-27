@@ -1,6 +1,5 @@
 <?php
 require_once('booking.php');
-// include_once('readWriteSQL.php');
 ?>
 
 <!DOCTYPE html>
@@ -77,20 +76,13 @@ require_once('booking.php');
                     <td><strong>Дата выезда</strong></td>
                 </tr>
                 <?php
-                $query = "SELECT name, date_entry, date_exit
-                FROM guests JOIN booking_list
-                ON guests.id = booking_list.name_id;";
-        // $arNameDate = Read('guests', $pdo, $query);
-                if (!empty($arNameDate = Read('guests', $pdo, $query))) {
-                    getTable($arNameDate);
-                }
+                    $query = "SELECT name, date_entry, date_exit
+                    FROM guests JOIN booking_list
+                    ON guests.id = booking_list.name_id;";
 
-
-                // if (($arData = Read('booking_list', $pdo))
-                //     && ($arDataCust = Read('guests', $pdo))
-                // ) {
-                //     joinTable($arData, $arDataCust);
-                // }
+                    if (!empty($arNameDate = Read('guests', $pdo, $query))) {
+                        getTable($arNameDate);
+                    }
                 ?>
             </table>
         </div>
